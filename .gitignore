@@ -1,0 +1,4 @@
+/to-do-api/node_modules
+/to-do-api/.env
+/to-do-api/private.key
+/to-do-api/public.key

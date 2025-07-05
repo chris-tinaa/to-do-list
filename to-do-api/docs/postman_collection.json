@@ -1,0 +1,807 @@
+{
+    "info": {
+      "name": "Task Management API",
+      "description": "Complete API collection for Task Management system with Lists and Tasks CRUD operations",
+      "version": "1.0.0",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "_postman_id": "task-mgmt-api-2025",
+      "author": "chris-tinaa",
+      "updatedAt": "2025-07-05T15:04:06.000Z"
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": [
+        {
+          "key": "token",
+          "value": "{{accessToken}}",
+          "type": "string"
+        }
+      ]
+    },
+    "event": [
+      {
+        "listen": "prerequest",
+        "script": {
+          "type": "text/javascript",
+          "exec": [
+            "// Auto-set Content-Type for requests with body",
+            "if (pm.request.body && pm.request.body.mode === 'raw') {",
+            "    pm.request.headers.add({",
+            "        key: 'Content-Type',",
+            "        value: 'application/json'",
+            "    });",
+            "}"
+          ]
+        }
+      }
+    ],
+    "variable": [
+      {
+        "key": "baseUrl",
+        "value": "http://localhost:3000/api",
+        "type": "string"
+      },
+      {
+        "key": "accessToken",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "refreshToken",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "userId",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "listId",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "taskId",
+        "value": "",
+        "type": "string"
+      }
+    ],
+    "item": [
+      {
+        "name": "🏠 Health & Info",
+        "item": [
+          {
+            "name": "Health Check",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/health",
+                "host": ["{{baseUrl}}"],
+                "path": ["health"]
+              },
+              "description": "Check API health and get system information"
+            },
+            "response": []
+          },
+          {
+            "name": "API Info",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "http://localhost:3000/",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "3000",
+                "path": [""]
+              },
+              "description": "Get API information and available endpoints"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "🔐 Authentication",
+        "item": [
+          {
+            "name": "Register User",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 201) {",
+                    "    const response = pm.response.json();",
+                    "    if (response.data && response.data.accessToken) {",
+                    "        pm.environment.set('accessToken', response.data.accessToken);",
+                    "        pm.environment.set('refreshToken', response.data.refreshToken);",
+                    "        pm.environment.set('userId', response.data.user.id);",
+                    "    }",
+                    "}"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"email\": \"chris-tinaa@example.com\",\n    \"password\": \"SecurePass123!\",\n    \"firstName\": \"Chris\",\n    \"lastName\": \"Tinaa\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/auth/register",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "register"]
+              },
+              "description": "Register a new user account"
+            },
+            "response": []
+          },
+          {
+            "name": "Login User",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 200) {",
+                    "    const response = pm.response.json();",
+                    "    if (response.data && response.data.accessToken) {",
+                    "        pm.environment.set('accessToken', response.data.accessToken);",
+                    "        pm.environment.set('refreshToken', response.data.refreshToken);",
+                    "        pm.environment.set('userId', response.data.user.id);",
+                    "        console.log('✅ Authentication tokens saved');",
+                    "    }",
+                    "}"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"email\": \"chris-tinaa@example.com\",\n    \"password\": \"SecurePass123!\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/auth/login",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "login"]
+              },
+              "description": "Login with existing user credentials"
+            },
+            "response": []
+          },
+          {
+            "name": "Refresh Token",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 200) {",
+                    "    const response = pm.response.json();",
+                    "    if (response.data && response.data.accessToken) {",
+                    "        pm.environment.set('accessToken', response.data.accessToken);",
+                    "        console.log('✅ Access token refreshed');",
+                    "    }",
+                    "}"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/auth/refresh",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "refresh"]
+              },
+              "description": "Refresh access token using refresh token"
+            },
+            "response": []
+          },
+          {
+            "name": "Logout User",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/auth/logout",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "logout"]
+              },
+              "description": "Logout user and invalidate tokens"
+            },
+            "response": []
+          },
+          {
+            "name": "Update Profile",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"firstName\": \"Christopher\",\n    \"lastName\": \"Tinaa-Updated\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/auth/profile",
+                "host": ["{{baseUrl}}"],
+                "path": ["auth", "profile"]
+              },
+              "description": "Update user profile information"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "📋 Lists Management",
+        "item": [
+          {
+            "name": "Get All Lists",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/lists",
+                "host": ["{{baseUrl}}"],
+                "path": ["lists"]
+              },
+              "description": "Get all lists for the authenticated user"
+            },
+            "response": []
+          },
+          {
+            "name": "Create New List",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 201) {",
+                    "    const response = pm.response.json();",
+                    "    if (response.data && response.data.id) {",
+                    "        pm.environment.set('listId', response.data.id);",
+                    "        console.log('✅ List ID saved:', response.data.id);",
+                    "    }",
+                    "}"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"name\": \"Work Projects - 2025\",\n    \"description\": \"All work-related tasks and projects for the year 2025. Created by chris-tinaa on 2025-07-05 15:04:06\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/lists",
+                "host": ["{{baseUrl}}"],
+                "path": ["lists"]
+              },
+              "description": "Create a new task list"
+            },
+            "response": []
+          },
+          {
+            "name": "Get List by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/lists/{{listId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["lists", "{{listId}}"]
+              },
+              "description": "Get a specific list by its ID"
+            },
+            "response": []
+          },
+          {
+            "name": "Update List",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"name\": \"Work Projects - Updated 2025\",\n    \"description\": \"Updated description for work-related tasks. Last modified on 2025-07-05 15:04:06 by chris-tinaa\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/lists/{{listId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["lists", "{{listId}}"]
+              },
+              "description": "Update an existing list"
+            },
+            "response": []
+          },
+          {
+            "name": "Delete List",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/lists/{{listId}}?force=false",
+                "host": ["{{baseUrl}}"],
+                "path": ["lists", "{{listId}}"],
+                "query": [
+                  {
+                    "key": "force",
+                    "value": "false",
+                    "description": "Set to true to force delete even if list contains tasks"
+                  }
+                ]
+              },
+              "description": "Delete a list (use force=true to delete with tasks)"
+            },
+            "response": []
+          },
+          {
+            "name": "Get List Statistics",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/lists/statistics",
+                "host": ["{{baseUrl}}"],
+                "path": ["lists", "statistics"]
+              },
+              "description": "Get statistics for all user lists"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "✅ Tasks Management",
+        "item": [
+          {
+            "name": "Get All User Tasks",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/tasks?isCompleted=false&priority=high&sortBy=deadline&sortOrder=asc&limit=50&offset=0",
+                "host": ["{{baseUrl}}"],
+                "path": ["tasks"],
+                "query": [
+                  {
+                    "key": "isCompleted",
+                    "value": "false",
+                    "description": "Filter by completion status"
+                  },
+                  {
+                    "key": "priority",
+                    "value": "high",
+                    "description": "Filter by priority (low, medium, high)"
+                  },
+                  {
+                    "key": "sortBy",
+                    "value": "deadline",
+                    "description": "Sort field (createdAt, updatedAt, deadline, title, priority)"
+                  },
+                  {
+                    "key": "sortOrder",
+                    "value": "asc",
+                    "description": "Sort order (asc, desc)"
+                  },
+                  {
+                    "key": "limit",
+                    "value": "50",
+                    "description": "Limit results (max 100)"
+                  },
+                  {
+                    "key": "offset",
+                    "value": "0",
+                    "description": "Offset for pagination"
+                  }
+                ]
+              },
+              "description": "Get all tasks for authenticated user with filtering and sorting"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Tasks in List",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/lists/{{listId}}/tasks?isCompleted=false&sortBy=priority&sortOrder=desc",
+                "host": ["{{baseUrl}}"],
+                "path": ["lists", "{{listId}}", "tasks"],
+                "query": [
+                  {
+                    "key": "isCompleted",
+                    "value": "false",
+                    "description": "Filter by completion status"
+                  },
+                  {
+                    "key": "sortBy",
+                    "value": "priority",
+                    "description": "Sort field"
+                  },
+                  {
+                    "key": "sortOrder",
+                    "value": "desc",
+                    "description": "Sort order"
+                  }
+                ]
+              },
+              "description": "Get all tasks in a specific list"
+            },
+            "response": []
+          },
+          {
+            "name": "Create Task in List",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "if (pm.response.code === 201) {",
+                    "    const response = pm.response.json();",
+                    "    if (response.data && response.data.id) {",
+                    "        pm.environment.set('taskId', response.data.id);",
+                    "        console.log('✅ Task ID saved:', response.data.id);",
+                    "    }",
+                    "}"
+                  ]
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"title\": \"Implement API Authentication\",\n    \"description\": \"Design and implement JWT-based authentication system for the Task Management API. Include login, register, refresh token functionality. Created by chris-tinaa on 2025-07-05 15:04:06\",\n    \"deadline\": \"2025-07-15T18:00:00.000Z\",\n    \"priority\": \"high\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/lists/{{listId}}/tasks",
+                "host": ["{{baseUrl}}"],
+                "path": ["lists", "{{listId}}", "tasks"]
+              },
+              "description": "Create a new task in a specific list"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Task by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/tasks/{{taskId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["tasks", "{{taskId}}"]
+              },
+              "description": "Get a specific task by its ID"
+            },
+            "response": []
+          },
+          {
+            "name": "Update Task",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"title\": \"Implement API Authentication - Updated\",\n    \"description\": \"Design and implement JWT-based authentication system for the Task Management API. Include login, register, refresh token functionality. Updated requirements added on 2025-07-05 15:04:06 by chris-tinaa\",\n    \"deadline\": \"2025-07-20T18:00:00.000Z\",\n    \"priority\": \"medium\",\n    \"isCompleted\": false\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/tasks/{{taskId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["tasks", "{{taskId}}"]
+              },
+              "description": "Update an existing task"
+            },
+            "response": []
+          },
+          {
+            "name": "Mark Task Complete",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/tasks/{{taskId}}/complete",
+                "host": ["{{baseUrl}}"],
+                "path": ["tasks", "{{taskId}}", "complete"]
+              },
+              "description": "Mark a task as completed"
+            },
+            "response": []
+          },
+          {
+            "name": "Mark Task Incomplete",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/tasks/{{taskId}}/incomplete",
+                "host": ["{{baseUrl}}"],
+                "path": ["tasks", "{{taskId}}", "incomplete"]
+              },
+              "description": "Mark a task as incomplete"
+            },
+            "response": []
+          },
+          {
+            "name": "Delete Task",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/tasks/{{taskId}}",
+                "host": ["{{baseUrl}}"],
+                "path": ["tasks", "{{taskId}}"]
+              },
+              "description": "Delete a task"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Tasks Due This Week",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/tasks/due-this-week",
+                "host": ["{{baseUrl}}"],
+                "path": ["tasks", "due-this-week"]
+              },
+              "description": "Get all tasks due within the current week"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Tasks Sorted by Deadline",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/tasks/sorted-by-deadline?order=asc&includeCompleted=true&limit=25&offset=0",
+                "host": ["{{baseUrl}}"],
+                "path": ["tasks", "sorted-by-deadline"],
+                "query": [
+                  {
+                    "key": "order",
+                    "value": "asc",
+                    "description": "Sort order (asc, desc)"
+                  },
+                  {
+                    "key": "includeCompleted",
+                    "value": "true",
+                    "description": "Include completed tasks"
+                  },
+                  {
+                    "key": "limit",
+                    "value": "25",
+                    "description": "Limit results"
+                  },
+                  {
+                    "key": "offset",
+                    "value": "0",
+                    "description": "Offset for pagination"
+                  }
+                ]
+              },
+              "description": "Get tasks sorted by deadline with options"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Task Statistics",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "url": {
+                "raw": "{{baseUrl}}/tasks/statistics",
+                "host": ["{{baseUrl}}"],
+                "path": ["tasks", "statistics"]
+              },
+              "description": "Get task statistics for the authenticated user"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "🧪 Test Workflows",
+        "item": [
+          {
+            "name": "Complete User Journey",
+            "request": {
+              "method": "GET",
+              "header": [],
+              "url": {
+                "raw": "{{baseUrl}}/health",
+                "host": ["{{baseUrl}}"],
+                "path": ["health"]
+              },
+              "description": "Run this after: Login → Create List → Create Task → Update Task → Complete Task → Get Statistics"
+            },
+            "response": []
+          },
+          {
+            "name": "Bulk Task Creation",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{accessToken}}"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"title\": \"Setup Development Environment\",\n    \"description\": \"Install Node.js, npm, and set up project structure for Task Management API. Create by chris-tinaa on 2025-07-05 15:04:06\",\n    \"deadline\": \"2025-07-10T12:00:00.000Z\",\n    \"priority\": \"high\"\n}"
+              },
+              "url": {
+                "raw": "{{baseUrl}}/lists/{{listId}}/tasks",
+                "host": ["{{baseUrl}}"],
+                "path": ["lists", "{{listId}}", "tasks"]
+              },
+              "description": "Create multiple tasks for testing"
+            },
+            "response": []
+          }
+        ]
+      }
+    ]
+  }

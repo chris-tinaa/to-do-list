@@ -1,0 +1,358 @@
+{
+    "_type": "export",
+    "__export_format": 4,
+    "__export_date": "2025-07-05T15:04:06.000Z",
+    "__export_source": "insomnia.desktop.app:v2023.5.8",
+    "resources": [
+      {
+        "_id": "req_group_root",
+        "_type": "request_group",
+        "parentId": "wrk_task_mgmt_api",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "name": "Task Management API",
+        "description": "Complete API collection for Task Management system - Created by chris-tinaa on 2025-07-05 15:04:06",
+        "environment": {},
+        "environmentPropertyOrder": null,
+        "metaSortKey": -1720191846000
+      },
+      {
+        "_id": "wrk_task_mgmt_api",
+        "_type": "workspace",
+        "parentId": null,
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "name": "Task Management API Workspace",
+        "description": "API Testing Workspace for Task Management System",
+        "scope": "collection"
+      },
+      {
+        "_id": "env_base",
+        "_type": "environment",
+        "parentId": "wrk_task_mgmt_api",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "name": "Base Environment",
+        "data": {
+          "baseUrl": "http://localhost:3000/api",
+          "accessToken": "",
+          "refreshToken": "",
+          "userId": "",
+          "listId": "",
+          "taskId": ""
+        },
+        "dataPropertyOrder": {
+          "&": ["baseUrl", "accessToken", "refreshToken", "userId", "listId", "taskId"]
+        },
+        "color": null,
+        "isPrivate": false,
+        "metaSortKey": 1720191846000
+      },
+      {
+        "_id": "jar_cookies",
+        "_type": "cookie_jar",
+        "parentId": "wrk_task_mgmt_api",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "name": "Default Jar",
+        "cookies": []
+      },
+      {
+        "_id": "req_group_health",
+        "_type": "request_group",
+        "parentId": "req_group_root",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "name": "🏠 Health & Info",
+        "description": "Health check and API information endpoints",
+        "environment": {},
+        "environmentPropertyOrder": null,
+        "metaSortKey": -1720191846000
+      },
+      {
+        "_id": "req_health_check",
+        "_type": "request",
+        "parentId": "req_group_health",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "url": "{{ _.baseUrl }}/health",
+        "name": "Health Check",
+        "description": "Check API health and get system information",
+        "method": "GET",
+        "body": {},
+        "parameters": [],
+        "headers": [],
+        "authentication": {},
+        "metaSortKey": -1720191846000,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global"
+      },
+      {
+        "_id": "req_api_info",
+        "_type": "request",
+        "parentId": "req_group_health",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "url": "http://localhost:3000/",
+        "name": "API Info",
+        "description": "Get API information and available endpoints",
+        "method": "GET",
+        "body": {},
+        "parameters": [],
+        "headers": [],
+        "authentication": {},
+        "metaSortKey": -1720191845000,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global"
+      },
+      {
+        "_id": "req_group_auth",
+        "_type": "request_group",
+        "parentId": "req_group_root",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "name": "🔐 Authentication",
+        "description": "User authentication and account management endpoints",
+        "environment": {},
+        "environmentPropertyOrder": null,
+        "metaSortKey": -1720191845000
+      },
+      {
+        "_id": "req_register",
+        "_type": "request",
+        "parentId": "req_group_auth",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "url": "{{ _.baseUrl }}/auth/register",
+        "name": "Register User",
+        "description": "Register a new user account",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n    \"email\": \"chris-tinaa@example.com\",\n    \"password\": \"SecurePass123!\",\n    \"firstName\": \"Chris\",\n    \"lastName\": \"Tinaa\"\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1720191846000,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global"
+      },
+      {
+        "_id": "req_login",
+        "_type": "request",
+        "parentId": "req_group_auth",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "url": "{{ _.baseUrl }}/auth/login",
+        "name": "Login User",
+        "description": "Login with existing user credentials",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n    \"email\": \"chris-tinaa@example.com\",\n    \"password\": \"SecurePass123!\"\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {},
+        "metaSortKey": -1720191845000,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global"
+      },
+      {
+        "_id": "req_group_lists",
+        "_type": "request_group",
+        "parentId": "req_group_root",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "name": "📋 Lists Management",
+        "description": "CRUD operations for task lists",
+        "environment": {},
+        "environmentPropertyOrder": null,
+        "metaSortKey": -1720191844000
+      },
+      {
+        "_id": "req_get_all_lists",
+        "_type": "request",
+        "parentId": "req_group_lists",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "url": "{{ _.baseUrl }}/lists",
+        "name": "Get All Lists",
+        "description": "Get all lists for the authenticated user",
+        "method": "GET",
+        "body": {},
+        "parameters": [],
+        "headers": [],
+        "authentication": {
+          "type": "bearer",
+          "token": "{{ _.accessToken }}"
+        },
+        "metaSortKey": -1720191846000,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global"
+      },
+      {
+        "_id": "req_create_list",
+        "_type": "request",
+        "parentId": "req_group_lists",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "url": "{{ _.baseUrl }}/lists",
+        "name": "Create New List",
+        "description": "Create a new task list",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n    \"name\": \"Work Projects - 2025\",\n    \"description\": \"All work-related tasks and projects for the year 2025. Created by chris-tinaa on 2025-07-05 15:04:06\"\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {
+          "type": "bearer",
+          "token": "{{ _.accessToken }}"
+        },
+        "metaSortKey": -1720191845000,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global"
+      },
+      {
+        "_id": "req_group_tasks",
+        "_type": "request_group",
+        "parentId": "req_group_root",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "name": "✅ Tasks Management",
+        "description": "CRUD operations for tasks",
+        "environment": {},
+        "environmentPropertyOrder": null,
+        "metaSortKey": -1720191843000
+      },
+      {
+        "_id": "req_get_all_tasks",
+        "_type": "request",
+        "parentId": "req_group_tasks",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "url": "{{ _.baseUrl }}/tasks",
+        "name": "Get All User Tasks",
+        "description": "Get all tasks for authenticated user with filtering and sorting",
+        "method": "GET",
+        "body": {},
+        "parameters": [
+          {
+            "name": "isCompleted",
+            "value": "false",
+            "description": "Filter by completion status"
+          },
+          {
+            "name": "priority",
+            "value": "high",
+            "description": "Filter by priority"
+          },
+          {
+            "name": "sortBy",
+            "value": "deadline",
+            "description": "Sort field"
+          },
+          {
+            "name": "sortOrder",
+            "value": "asc",
+            "description": "Sort order"
+          }
+        ],
+        "headers": [],
+        "authentication": {
+          "type": "bearer",
+          "token": "{{ _.accessToken }}"
+        },
+        "metaSortKey": -1720191846000,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global"
+      },
+      {
+        "_id": "req_create_task",
+        "_type": "request",
+        "parentId": "req_group_tasks",
+        "modified": 1720191846000,
+        "created": 1720191846000,
+        "url": "{{ _.baseUrl }}/lists/{{ _.listId }}/tasks",
+        "name": "Create Task in List",
+        "description": "Create a new task in a specific list",
+        "method": "POST",
+        "body": {
+          "mimeType": "application/json",
+          "text": "{\n    \"title\": \"Implement API Authentication\",\n    \"description\": \"Design and implement JWT-based authentication system for the Task Management API. Include login, register, refresh token functionality. Created by chris-tinaa on 2025-07-05 15:04:06\",\n    \"deadline\": \"2025-07-15T18:00:00.000Z\",\n    \"priority\": \"high\"\n}"
+        },
+        "parameters": [],
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "authentication": {
+          "type": "bearer",
+          "token": "{{ _.accessToken }}"
+        },
+        "metaSortKey": -1720191845000,
+        "isPrivate": false,
+        "settingStoreCookies": true,
+        "settingSendCookies": true,
+        "settingDisableRenderRequestBody": false,
+        "settingEncodeUrl": true,
+        "settingRebuildPath": true,
+        "settingFollowRedirects": "global"
+      }
+    ]
+  }
