@@ -1,383 +1,169 @@
-# Project API
+# To-Do API
 
-A comprehensive RESTful API built with [Your Framework/Technology Stack]. This API provides [brief description of what your API does - e.g., user management, data processing, etc.].
+TypeScript/Express backend scaffold for the To-Do List project. The project contains the backend architecture for authentication, task lists, tasks, repositories, validation, rate limiting, and database migrations.
 
-## 🚀 Quick Start
+## Current Status
 
-### Prerequisites
+`src/app.ts` currently mounts a simple health endpoint:
 
-- [Runtime/Language] version X.X or higher
-- [Database] (if applicable)
-- [Other dependencies]
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/chris-tinaa/your-api-project.git
-cd your-api-project
+```text
+GET /health
 ```
 
-2. Install dependencies:
+The fuller API surface is already represented in route, controller, service, repository, middleware, and model files under `src/`, but those routes still need to be wired into `src/app.ts` before the Express backend serves them.
+
+## Stack
+
+- Node.js
+- Express 5
+- TypeScript
+- Jest and Supertest
+- Zod and Joi for validation-related work
+- bcrypt for password hashing
+- jsonwebtoken for JWT handling
+- pg for PostgreSQL access
+- express-rate-limit for rate limiting
+
+## Project Structure
+
+```text
+to-do-api/
+|-- docs/                 # Implementation notes and API collections
+|-- src/
+|   |-- api/              # Controllers and Express route modules
+|   |-- config/           # App, database, env, and JWT configuration
+|   |-- middleware/       # Auth, validation, error, and rate-limit middleware
+|   |-- migrations/       # SQL migration placeholders
+|   |-- models/           # TypeScript model interfaces
+|   |-- repositories/     # Memory and SQL repository implementations
+|   |-- services/         # Business logic
+|   |-- utils/            # JWT, password, migration, and error utilities
+|   |-- app.ts            # Express app entry point
+|   `-- server.ts         # Server startup
+|-- jest.config.js
+|-- package.json
+`-- tsconfig.json
+```
+
+## Installation
+
 ```bash
-# For Node.js
+cd to-do-api
 npm install
-
-# For Python
-pip install -r requirements.txt
-
-# For other languages, adjust accordingly
 ```
 
-3. Set up environment variables:
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
+## Environment Variables
 
-4. Start the development server:
-```bash
-# For Node.js
-npm run dev
+The environment validation expects these variables:
 
-# For Python
-python app.py
+| Variable | Required | Default | Description |
+| --- | --- | --- | --- |
+| `PORT` | No | `3000` | Server port |
+| `NODE_ENV` | No | `development` | `development`, `production`, or `test` |
+| `LOG_LEVEL` | No | `info` | Logging level |
+| `ACCESS_TOKEN_SECRET` | Yes | None | Secret for access tokens |
+| `REFRESH_TOKEN_SECRET` | Yes | None | Secret for refresh tokens |
+| `ACCESS_TOKEN_EXPIRES_IN` | No | `1h` | Access token lifetime |
+| `REFRESH_TOKEN_EXPIRES_IN` | No | `7d` | Refresh token lifetime |
+| `DB_CONNECTION` | No | `postgres` | `postgres` or `memory` |
+| `DB_HOST` | No | None | PostgreSQL host |
+| `DB_PORT` | No | None | PostgreSQL port |
+| `DB_USER` | No | None | PostgreSQL user |
+| `DB_PASSWORD` | No | None | PostgreSQL password |
+| `DB_NAME` | No | None | PostgreSQL database name |
+| `DATABASE_URL` | No | None | PostgreSQL connection string |
 
-# For other frameworks, adjust accordingly
-```
-
-The API will be available at `http://localhost:3000` (or your configured port).
-
-## 📖 API Documentation
-
-### Base URL
-```
-Production: https://your-api-domain.com/api/v1
-Development: http://localhost:3000/api/v1
-```
-
-### Authentication
-
-This API uses **Bearer Token** authentication. Include the token in the Authorization header:
-
-```http
-Authorization: Bearer your_jwt_token_here
-```
-
-#### Getting an Access Token
-
-**POST** `/auth/login`
-
-```json
-{
-  "email": "user@example.com",
-  "password": "your_password"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "expires_in": 3600,
-    "user": {
-      "id": 1,
-      "email": "user@example.com",
-      "name": "John Doe"
-    }
-  }
-}
-```
-
-### Core Endpoints
-
-#### Users
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/users` | Get all users | ✅ |
-| GET | `/users/:id` | Get user by ID | ✅ |
-| POST | `/users` | Create new user | ✅ |
-| PUT | `/users/:id` | Update user | ✅ |
-| DELETE | `/users/:id` | Delete user | ✅ |
-
-#### Example: Get All Users
-
-**GET** `/users`
-
-**Headers:**
-```http
-Authorization: Bearer your_token_here
-Content-Type: application/json
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "name": "John Doe",
-      "email": "john@example.com",
-      "created_at": "2024-01-15T10:30:00Z"
-    }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 10,
-    "total": 1,
-    "pages": 1
-  }
-}
-```
-
-#### Example: Create User
-
-**POST** `/users`
-
-**Request Body:**
-```json
-{
-  "name": "Jane Smith",
-  "email": "jane@example.com",
-  "password": "secure_password"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 2,
-    "name": "Jane Smith",
-    "email": "jane@example.com",
-    "created_at": "2024-01-15T11:45:00Z"
-  },
-  "message": "User created successfully"
-}
-```
-
-### Response Format
-
-All API responses follow this consistent structure:
-
-```json
-{
-  "success": boolean,
-  "data": object | array | null,
-  "message": "string (optional)",
-  "error": "string (only when success is false)",
-  "pagination": "object (only for paginated responses)"
-}
-```
-
-### Error Handling
-
-The API uses conventional HTTP response codes:
-
-- `200` - OK: Request successful
-- `201` - Created: Resource created successfully
-- `400` - Bad Request: Invalid request data
-- `401` - Unauthorized: Authentication required
-- `403` - Forbidden: Access denied
-- `404` - Not Found: Resource not found
-- `422` - Unprocessable Entity: Validation errors
-- `500` - Internal Server Error: Server error
-
-**Error Response Example:**
-```json
-{
-  "success": false,
-  "error": "Validation failed",
-  "details": {
-    "email": ["Email is required"],
-    "password": ["Password must be at least 8 characters"]
-  }
-}
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file in the root directory:
+Example local `.env`:
 
 ```env
-# Server Configuration
 PORT=3000
 NODE_ENV=development
-
-# Database Configuration
-DATABASE_URL=your_database_connection_string
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=your_database_name
-DB_USER=your_db_user
-DB_PASS=your_db_password
-
-# Authentication
-JWT_SECRET=your_jwt_secret_key
-JWT_EXPIRES_IN=24h
-
-# External Services
-REDIS_URL=redis://localhost:6379
-EMAIL_SERVICE_API_KEY=your_email_service_key
+LOG_LEVEL=info
+ACCESS_TOKEN_SECRET=replace-with-a-local-secret
+REFRESH_TOKEN_SECRET=replace-with-a-local-refresh-secret
+ACCESS_TOKEN_EXPIRES_IN=1h
+REFRESH_TOKEN_EXPIRES_IN=7d
+DB_CONNECTION=memory
 ```
 
-## 🧪 Testing
-
-Run the test suite:
+## Commands
 
 ```bash
-# Run all tests
+npm run dev      # Start development server with nodemon
+npm run build    # Compile TypeScript
+npm start        # Run compiled server from dist/server.js
+npm test         # Run Jest tests
+```
+
+## Health Check
+
+Start the server:
+
+```bash
+npm run dev
+```
+
+Then call:
+
+```bash
+curl http://localhost:3000/health
+```
+
+Expected response:
+
+```json
+{
+  "success": true,
+  "message": "API is healthy"
+}
+```
+
+## Planned API Routes
+
+The route modules define the intended API shape:
+
+| Area | Routes |
+| --- | --- |
+| Auth | `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/refresh`, `POST /api/auth/logout`, `GET /api/auth/profile`, `PUT /api/auth/profile`, `GET /api/auth/verify`, `GET /api/auth/statistics` |
+| Lists | `GET /api/lists`, `POST /api/lists`, `GET /api/lists/:id`, `PUT /api/lists/:id`, `DELETE /api/lists/:id`, `GET /api/lists/statistics` |
+| List tasks | `GET /api/lists/:listId/tasks`, `POST /api/lists/:listId/tasks` |
+| Tasks | `GET /api/tasks`, `GET /api/tasks/:id`, `PUT /api/tasks/:id`, `DELETE /api/tasks/:id`, `PATCH /api/tasks/:id/complete`, `PATCH /api/tasks/:id/incomplete`, `GET /api/tasks/due-this-week`, `GET /api/tasks/sorted-by-deadline`, `GET /api/tasks/statistics` |
+
+## Data Layer
+
+The repository layer is designed around interchangeable storage implementations:
+
+- `src/repositories/memory` for local development and testing.
+- `src/repositories/sql` for PostgreSQL-backed persistence.
+- `src/repositories/interfaces` for shared contracts.
+
+Migration files currently exist under `src/migrations`, but they are placeholders and should be completed before using PostgreSQL in production.
+
+## Testing
+
+Jest is configured through `jest.config.js` to run TypeScript tests matching:
+
+```text
+**/tests/**/*.test.ts
+```
+
+Run tests with:
+
+```bash
 npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run tests in watch mode
-npm run test:watch
 ```
 
-### API Testing with curl
+## API Collections
 
-```bash
-# Health check
-curl -X GET http://localhost:3000/health
+Import these files into an API client to explore the intended request flows:
 
-# Login
-curl -X POST http://localhost:3000/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"password"}'
+- `docs/postman_collection.json`
+- `docs/insomnia_collection.json`
 
-# Get users (with token)
-curl -X GET http://localhost:3000/api/v1/users \
-  -H "Authorization: Bearer your_token_here"
-```
+## Next Development Steps
 
-## 📚 AI Integration Guide
-
-### For AI Assistants and Developers
-
-This API is designed to be AI-friendly with:
-
-1. **Consistent Response Format**: All endpoints return responses in the same structure
-2. **Clear Error Messages**: Detailed error information for debugging
-3. **RESTful Design**: Predictable endpoint patterns
-4. **Comprehensive Documentation**: Self-explanatory endpoint descriptions
-
-### Common Integration Patterns
-
-```javascript
-// Example: JavaScript/Node.js integration
-const API_BASE = 'http://localhost:3000/api/v1';
-let authToken = null;
-
-async function login(email, password) {
-  const response = await fetch(`${API_BASE}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  });
-  const data = await response.json();
-  authToken = data.data.token;
-  return data;
-}
-
-async function getUsers() {
-  const response = await fetch(`${API_BASE}/users`, {
-    headers: { 'Authorization': `Bearer ${authToken}` }
-  });
-  return response.json();
-}
-```
-
-```python
-# Example: Python integration
-import requests
-
-class APIClient:
-    def __init__(self, base_url="http://localhost:3000/api/v1"):
-        self.base_url = base_url
-        self.token = None
-    
-    def login(self, email, password):
-        response = requests.post(f"{self.base_url}/auth/login", 
-                               json={"email": email, "password": password})
-        data = response.json()
-        self.token = data["data"]["token"]
-        return data
-    
-    def get_users(self):
-        headers = {"Authorization": f"Bearer {self.token}"}
-        response = requests.get(f"{self.base_url}/users", headers=headers)
-        return response.json()
-```
-
-## 🚀 Deployment
-
-### Production Deployment
-
-1. **Environment Setup**:
-   - Set `NODE_ENV=production`
-   - Configure production database
-   - Set secure JWT secret
-
-2. **Build and Deploy**:
-```bash
-npm run build
-npm start
-```
-
-3. **Health Check Endpoint**:
-   - `GET /health` - Returns API status and version
-
-### Docker Deployment
-
-```dockerfile
-FROM node:18-alpine
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-COPY . .
-EXPOSE 3000
-
-CMD ["npm", "start"]
-```
-
-## 📝 API Versioning
-
-This API follows semantic versioning. Current version: `v1`
-
-- Breaking changes will increment the major version
-- New features will increment the minor version
-- Bug fixes will increment the patch version
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/chris-tinaa/your-api-project/issues)
-- **Email**: your-email@example.com
-- **Documentation**: [Full API Docs](https://your-api-docs-url.com)
-
----
-
-**Last Updated**: July 2025
-**API Version**: v1.0.0
+1. Mount the route modules in `src/app.ts`.
+2. Add request body parsing and middleware ordering in the Express app.
+3. Complete SQL migrations.
+4. Add or finish integration tests for auth, lists, and tasks.
+5. Add a generated OpenAPI document once the mounted routes are stable.
